@@ -39,3 +39,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# exd all nested builds/deps
+**/.next/
+**/node_modules/
+**/out/
+**/build/
+*.tsbuildinfo
+
+# DB local + secrets
+*.db
+*.db-journal
+.dev.vars
