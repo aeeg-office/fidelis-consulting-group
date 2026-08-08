@@ -1,0 +1,74 @@
+{
+  "siteName": "فيدليس للاستشارات",
+  "siteNameEn": "Fidelis Consulting Group",
+  "tagline": "دعم المدارس. تطوير الأشخاص. تحسين التعلم.",
+  "taglineEn": "Supporting Schools. Developing People. Improving Learning.",
+  "nav": {
+    "home": "الرئيسية",
+    "about": "عن الشركة",
+    "services": "الخدمات",
+    "aiPlatform": "منصة الذكاء الاصطناعي",
+    "professionalDevelopment": "التطوير المهني",
+    "resources": "الموارد",
+    "insights": "الرؤى",
+    "careers": "الوظائف",
+    "contact": "اتصل بنا",
+    "login": "تسجيل الدخول",
+    "getStarted": "ابدأ الآن"
+  },
+  "navEn": {
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "aiPlatform": "AI Platform",
+    "professionalDevelopment": "Professional Development",
+    "resources": "Resources",
+    "insights": "Insights",
+    "careers": "Careers",
+    "contact": "Contact",
+    "login": "Login",
+    "getStarted": "Get Started"
+  },
+  "hero": {
+    "title": "دعم المدارس. تطوير الأشخاص. تحسين التعلم.",
+    "titleEn": "Supporting Schools. Developing People. Improving Learning.",
+    "subtitle": "استشارات تعليمية متميزة للمدارس الدولية في الشرق الأوسط وشمال أفريقيا.",
+    "subtitleEn": "Premium education consultancy for international schools in the Middle East and North Africa.",
+    "cta": "اكتشف خدماتنا",
+    "ctaEn": "Explore Our Services",
+    "secondaryCta": "اعرف المزيد",
+    "secondaryCtaEn": "Learn More"
+  },
+  "services": {
+    "title": "خدماتنا",
+    "titleEn": "Our Services",
+    "englishConsultancy": "استشارات قسم اللغة الإنجليزية",
+    "englishConsultancyEn": "English Department Consultancy",
+    "englishConsultancyDesc": "تدقيق شامل ومراجعة المناهج والتدريب لأقسام اللغة الإنجليزية في المدارس الدولية.",
+    "englishConsultancyDescEn": "Comprehensive audits, curriculum reviews, and coaching for international school English departments.",
+    "professionalDevelopment": "التطوير المهني",
+    "professionalDevelopmentEn": "Professional Development",
+    "professionalDevelopmentDesc": "ورش عمل ودورات في تدريس اللغة الإنجليزية والذكاء الاصطناعي للمعلمين.",
+    "professionalDevelopmentDescEn": "Workshops and courses in English teaching and AI for educators.",
+    "aiPlatform": "منصة الذكاء الاصطناعي للمعلمين",
+    "aiPlatformEn": "AI Platform for Teachers",
+    "aiPlatformDesc": "أكثر من 20 أداة ذكاء اصطناعي منظمة لا تتطلب أي خبرة في كتابة الأوامر. تعمل كبرنامج وليس كمحادثة.",
+    "aiPlatformDescEn": "20+ structured AI tools that require zero prompt engineering. Feels like software, not chat."
+  },
+  "footer": {
+    "rights": "جميع الحقوق محفوظة.",
+    "rightsEn": "All rights reserved.",
+    "privacy": "سياسة الخصوصية",
+    "privacyEn": "Privacy Policy",
+    "terms": "شروط الخدمة",
+    "termsEn": "Terms of Service",
+    "cookies": "سياسة ملفات تعريف الارتباط",
+    "cookiesEn": "Cookie Policy",
+    "newsletter": "اشترك في نشرتنا البريدية",
+    "newsletterEn": "Subscribe to our newsletter"
+  },
+  "language": {
+    "switchTo": "English",
+    "switchToAr": "العربية"
+  }
+}

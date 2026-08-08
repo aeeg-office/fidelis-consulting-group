@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' http://localhost:* https://*.openstreetmap.org; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: http://localhost:*; font-src 'self' data:;">
+  <title>AEEG Practice Buddy</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    #loading-screen {
+      position: fixed; inset: 0; background: #f9fafb;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999; transition: opacity 0.5s;
+    }
+    #loading-screen.hidden { opacity: 0; pointer-events: none; }
+    .loader { border: 3px solid #e5e7eb; border-top: 3px solid #1a56db; border-radius: 50%; width: 48px; height: 48px; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { margin-top: 1rem; color: #6b7280; font-size: 0.875rem; }
+    iframe { width: 100vw; height: 100vh; border: none; }
+  </style>
+</head>
+<body>
+  <div id="loading-screen">
+    <div style="text-align:center">
+      <div class="loader"></div>
+      <p class="loading-text">Loading AEEG Practice Buddy...</p>
+    </div>
+  </div>
+  <iframe id="app-frame" src="" allow="clipboard-read; clipboard-write"></iframe>
+  <script>
+    const API_URL = 'http://localhost:3001';
+    const FRONTEND_URL = 'http://localhost:3000/practice-buddy';
+    
+    const frame = document.getElementById('app-frame');
+    const loadingScreen = document.getElementById('loading-screen');
+    
+    frame.src = FRONTEND_URL;
+    frame.onload = () => {
+      loadingScreen.classList.add('hidden');
+    };
+    
+    // Handle kiosk mode from iframe
+    window.addEventListener('message', (event) => {
+      if (event.data === 'exit-kiosk') {
+        document.exitFullscreen();
+      }
+    });
+
+    // Security: disable right-click
+    document.addEventListener('contextmenu', (e) => e.preventDefault());
+    
+    // Disable print
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && (e.key === 'p' || e.key === 'P')) {
+        e.preventDefault();
+      }
+      if (e.key === 'PrintScreen') {
+        e.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>
