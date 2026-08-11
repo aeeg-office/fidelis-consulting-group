@@ -37,6 +37,9 @@
   "exclude": [
     "node_modules",
     ".next",
-    "practice-buddy"
+    "practice-buddy",
+    "tests",
+    "vitest.config.mts",
+    "playwright.config.ts"
   ]
 }
