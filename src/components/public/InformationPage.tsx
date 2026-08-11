@@ -36,7 +36,7 @@ export function InformationPage({ eyebrow, title, intro, sections, cta = { label
           <div className="mt-12 rounded-lg bg-navy p-8 text-center text-white">
             <h2 className="font-[family-name:var(--font-heading)] text-2xl font-bold">Start a focused conversation</h2>
             <p className="mx-auto mt-3 max-w-2xl text-ivory/80">Tell us what your school, department, or teaching team needs. We will respond with an appropriate next step.</p>
-            <Link href={cta.href} className="mt-6 inline-flex h-11 items-center justify-center rounded-md bg-gold px-6 font-semibold text-navy hover:bg-gold-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">{cta.label}</Link>
+            <Link href={cta.href} className="mt-6 inline-flex h-11 items-center justify-center rounded-md bg-gold px-6 font-semibold text-white hover:bg-gold-light hover:text-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">{cta.label}</Link>
           </div>
         </section>
       </main>

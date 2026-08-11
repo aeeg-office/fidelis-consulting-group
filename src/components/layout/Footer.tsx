@@ -35,7 +35,7 @@ export function Footer() {
                 <span className="text-navy font-bold text-lg font-[family-name:var(--font-heading)]">F</span>
               </div>
               <div>
-                <span className="font-[family-name:var(--font-heading)] font-bold text-gold text-lg leading-tight block">
+                <span className="font-[family-name:var(--font-heading)] font-bold text-gold-light text-lg leading-tight block">
                   Fidelis
                 </span>
                 <span className="text-xs text-ivory/70 leading-tight block">
@@ -49,19 +49,19 @@ export function Footer() {
             <div className="max-w-sm">
               <p className="text-sm font-medium text-ivory/90 mb-2">Stay informed</p>
               <p className="text-sm text-ivory/70">For resources and updates, contact Fidelis directly. We only add people to communications with their consent.</p>
-              <Link href="/contact" className="mt-3 inline-flex text-sm font-semibold text-gold hover:text-gold-light">Contact Fidelis →</Link>
+              <Link href="/contact" className="mt-3 inline-flex text-sm font-semibold text-gold-light hover:text-gold-light">Contact Fidelis →</Link>
             </div>
           </div>
 
           {/* Services */}
           <div>
-            <h4 className="font-[family-name:var(--font-heading)] font-bold text-gold text-sm mb-4 uppercase tracking-wider">
+            <h4 className="font-[family-name:var(--font-heading)] font-bold text-gold-light text-sm mb-4 uppercase tracking-wider">
               Services
             </h4>
             <ul className="space-y-3">
               {footerLinks.services.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-ivory/70 hover:text-gold text-sm transition-colors">
+                  <Link href={link.href} className="text-ivory/70 hover:text-gold-light text-sm transition-colors">
                     {link.label}
                   </Link>
                 </li>
@@ -71,20 +71,20 @@ export function Footer() {
 
           {/* PD */}
           <div>
-            <h4 className="font-[family-name:var(--font-heading)] font-bold text-gold text-sm mb-4 uppercase tracking-wider">
+            <h4 className="font-[family-name:var(--font-heading)] font-bold text-gold-light text-sm mb-4 uppercase tracking-wider">
               Professional Development
             </h4>
             <ul className="space-y-3">
               {footerLinks.pd.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-ivory/70 hover:text-gold text-sm transition-colors">
+                  <Link href={link.href} className="text-ivory/70 hover:text-gold-light text-sm transition-colors">
                     {link.label}
                   </Link>
                 </li>
               ))}
               {footerLinks.resources.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-ivory/70 hover:text-gold text-sm transition-colors">
+                  <Link href={link.href} className="text-ivory/70 hover:text-gold-light text-sm transition-colors">
                     {link.label}
                   </Link>
                 </li>
@@ -94,13 +94,13 @@ export function Footer() {
 
           {/* Legal */}
           <div>
-            <h4 className="font-[family-name:var(--font-heading)] font-bold text-gold text-sm mb-4 uppercase tracking-wider">
+            <h4 className="font-[family-name:var(--font-heading)] font-bold text-gold-light text-sm mb-4 uppercase tracking-wider">
               Legal
             </h4>
             <ul className="space-y-3">
               {footerLinks.legal.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-ivory/70 hover:text-gold text-sm transition-colors">
+                  <Link href={link.href} className="text-ivory/70 hover:text-gold-light text-sm transition-colors">
                     {link.label}
                   </Link>
                 </li>
@@ -109,7 +109,7 @@ export function Footer() {
             <div className="mt-6">
               <Link
                 href="/contact"
-                className="text-ivory/70 hover:text-gold text-sm transition-colors"
+                className="text-ivory/70 hover:text-gold-light text-sm transition-colors"
               >
                 Contact Us
               </Link>
@@ -121,17 +121,17 @@ export function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-white/10">
         <div className="container-wide py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="text-ivory/50 text-xs">
+          <p className="text-ivory/60 text-xs">
             © {new Date().getFullYear()} Fidelis Consulting Group. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
-            <Link href="/privacy" className="text-ivory/50 hover:text-ivory/80 text-xs transition-colors">
+            <Link href="/privacy" className="text-ivory/60 hover:text-ivory/80 text-xs transition-colors">
               Privacy Policy
             </Link>
-            <Link href="/terms" className="text-ivory/50 hover:text-ivory/80 text-xs transition-colors">
+            <Link href="/terms" className="text-ivory/60 hover:text-ivory/80 text-xs transition-colors">
               Terms of Service
             </Link>
-            <Link href="/cookies" className="text-ivory/50 hover:text-ivory/80 text-xs transition-colors">
+            <Link href="/cookies" className="text-ivory/60 hover:text-ivory/80 text-xs transition-colors">
               Cookie Policy
             </Link>
           </div>
