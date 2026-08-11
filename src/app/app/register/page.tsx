@@ -10,8 +10,8 @@ import { cn } from "@/lib/utils";
 import { Eye, EyeOff, Loader2, CheckCircle, Search, X } from "lucide-react";
 
 const ROLES = [
-  { value: "teacher", label: "Teacher" },
-  { value: "school_admin", label: "School Administrator" },
+  { value: "teacher", label: "School-linked Teacher" },
+  { value: "independent_teacher", label: "Independent Teacher" },
 ] as const;
 
 interface School {

@@ -1,6 +1,7 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import type { Metadata } from "next";
+import { ContactForm } from "@/components/public/ContactForm";
 
 export const metadata: Metadata = {
   title: "Contact Us",
@@ -41,40 +42,7 @@ export default function ContactPage() {
               </div>
             </div>
             <div className="bg-ivory rounded-lg p-8">
-              <form className="space-y-5">
-                <div>
-                  <label className="block text-sm font-medium text-navy mb-1.5">Full Name</label>
-                  <input type="text" className="w-full h-11 px-4 rounded-md border border-border bg-white text-sm focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy" placeholder="Your name" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-navy mb-1.5">Email</label>
-                  <input type="email" className="w-full h-11 px-4 rounded-md border border-border bg-white text-sm focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy" placeholder="your@email.com" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-navy mb-1.5">School (optional)</label>
-                  <input type="text" className="w-full h-11 px-4 rounded-md border border-border bg-white text-sm focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy" placeholder="School name" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-navy mb-1.5">Subject</label>
-                  <select className="w-full h-11 px-4 rounded-md border border-border bg-white text-sm focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy">
-                    <option value="">Select a subject</option>
-                    <option value="consultancy">English Department Consultancy</option>
-                    <option value="pd">Professional Development</option>
-                    <option value="ai">AI Platform</option>
-                    <option value="general">General Inquiry</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-navy mb-1.5">Message</label>
-                  <textarea rows={5} className="w-full px-4 py-3 rounded-md border border-border bg-white text-sm focus:outline-none focus:border-navy focus:ring-1 focus:ring-navy resize-none" placeholder="Tell us about your needs..." />
-                </div>
-                <button
-                  type="submit"
-                  className="w-full h-12 bg-navy text-white font-semibold rounded-lg hover:bg-navy-light transition-all duration-200"
-                >
-                  Send Message
-                </button>
-              </form>
+              <ContactForm />
             </div>
           </div>
         </section>

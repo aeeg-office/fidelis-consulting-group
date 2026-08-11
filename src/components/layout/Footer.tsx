@@ -46,21 +46,10 @@ export function Footer() {
             <p className="text-ivory/80 text-sm leading-relaxed max-w-sm mb-6">
               Supporting Schools. Developing People. Improving Learning.
             </p>
-            {/* Newsletter */}
             <div className="max-w-sm">
-              <label className="text-sm font-medium text-ivory/90 mb-2 block">
-                Subscribe to our newsletter
-              </label>
-              <div className="flex gap-2">
-                <input
-                  type="email"
-                  placeholder="your@email.com"
-                  className="flex-1 h-10 px-4 rounded-md bg-navy-light border border-white/20 text-white placeholder:text-white/40 text-sm focus:outline-none focus:border-gold"
-                />
-                <button className="h-10 px-4 bg-gold text-navy font-semibold rounded-md text-sm hover:bg-gold-light transition-colors">
-                  Subscribe
-                </button>
-              </div>
+              <p className="text-sm font-medium text-ivory/90 mb-2">Stay informed</p>
+              <p className="text-sm text-ivory/70">For resources and updates, contact Fidelis directly. We only add people to communications with their consent.</p>
+              <Link href="/contact" className="mt-3 inline-flex text-sm font-semibold text-gold hover:text-gold-light">Contact Fidelis →</Link>
             </div>
           </div>
 

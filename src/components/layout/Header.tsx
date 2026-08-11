@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/Button";
 import { useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 
@@ -147,9 +146,12 @@ export function Header() {
           >
             {t.login}
           </Link>
-          <Button variant="primary" size="sm" className="hidden sm:inline-flex">
+          <Link
+            href="/app/register"
+            className="hidden sm:inline-flex h-9 items-center justify-center rounded-md bg-gold px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-gold-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
+          >
             {t.getStarted}
-          </Button>
+          </Link>
           {/* Language Switcher */}
           <Link
             href="/ar"
@@ -211,9 +213,13 @@ export function Header() {
               >
                 {t.login}
               </Link>
-              <Button variant="primary" fullWidth className="mt-2" onClick={() => setMobileMenuOpen(false)}>
+              <Link
+                href="/app/register"
+                className="mt-2 flex h-11 w-full items-center justify-center rounded-md bg-gold px-4 font-semibold text-white shadow-sm transition-colors hover:bg-gold-light"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 {t.getStarted}
-              </Button>
+              </Link>
             </div>
           </div>
         </div>

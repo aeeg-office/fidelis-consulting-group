@@ -132,24 +132,10 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Stats Section */}
         <section className="bg-navy py-16">
-          <div className="container-wide">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-              {[
-                { number: "15+", label: "Years Experience" },
-                { number: "50+", label: "Schools Served" },
-                { number: "1,000+", label: "Teachers Trained" },
-                { number: "22", label: "AI Tools" },
-              ].map((stat) => (
-                <div key={stat.label}>
-                  <div className="text-3xl md:text-4xl font-[family-name:var(--font-heading)] font-bold text-gold mb-2">
-                    {stat.number}
-                  </div>
-                  <div className="text-ivory/80 text-sm">{stat.label}</div>
-                </div>
-              ))}
-            </div>
+          <div className="container-wide max-w-4xl text-center">
+            <h2 className="font-[family-name:var(--font-heading)] text-3xl font-bold text-gold">Focused support for international schools</h2>
+            <p className="mx-auto mt-4 max-w-3xl text-ivory/80">Fidelis brings extensive experience in international education to English department consultancy, professional development, and responsible AI integration. We do not publish unverified client or participation statistics.</p>
           </div>
         </section>
 

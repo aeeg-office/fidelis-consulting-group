@@ -33,7 +33,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return null;
         }
 
-        if (!user.isActive) {
+        if (!user.isActive || !user.emailVerified) {
           return null;
         }
 
@@ -57,10 +57,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (account?.provider === "credentials") {
         const existingUser = await prisma.user.findUnique({
           where: { id: user.id },
-          select: { isActive: true },
+          select: { isActive: true, emailVerified: true },
         });
 
-        if (!existingUser || !existingUser.isActive) {
+        if (!existingUser || !existingUser.isActive || !existingUser.emailVerified) {
           return false;
         }
 

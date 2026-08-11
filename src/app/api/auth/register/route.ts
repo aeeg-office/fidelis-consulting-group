@@ -30,10 +30,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const validRoles = ["teacher", "school_admin"];
+    const validRoles = ["teacher", "independent_teacher"];
     if (!role || !validRoles.includes(role)) {
       return NextResponse.json(
-        { error: "Please select a valid role (teacher or school administrator)." },
+        { error: "Please select an educator account type." },
         { status: 400 }
       );
     }
@@ -114,9 +114,8 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // TODO: Send verification email (integration with email service)
-    // For now, log the token for development
-    console.log(`[DEV] Verification token for ${normalizedEmail}: ${verificationToken}`);
+    // Email delivery must be configured before this flow is enabled in production.
+    // Never log verification secrets.
 
     return NextResponse.json(
       {
