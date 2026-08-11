@@ -19,6 +19,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm run prisma:validate
+      - run: npm run prisma:generate
       - run: npx playwright install --with-deps chromium
       - run: npm run lint
       - run: npm run typecheck

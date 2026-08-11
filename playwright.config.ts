@@ -22,7 +22,7 @@ export default defineConfig({
     : {
         command: process.env.PLAYWRIGHT_WEB_SERVER ?? `npm run dev -- --port ${port}`,
         url: baseURL,
-        reuseExistingServer: !process.env.CI,
+        reuseExistingServer: process.env.PLAYWRIGHT_ALLOW_REUSE === "true",
         timeout: 120_000,
       },
 });

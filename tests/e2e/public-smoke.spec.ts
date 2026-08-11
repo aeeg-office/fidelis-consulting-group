@@ -4,7 +4,7 @@ test("public home page renders core content and calls to action", async ({ page 
   const pageErrors: Error[] = [];
   page.on("pageerror", (error) => pageErrors.push(error));
 
-  await page.goto("/", { waitUntil: "networkidle" });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
 
   await expect(
     page.getByRole("heading", {

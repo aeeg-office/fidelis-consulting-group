@@ -16,6 +16,13 @@ describe("quality harness", () => {
       build: expect.any(String),
       "test:unit": expect.any(String),
       "test:e2e": expect.any(String),
+      "prisma:generate": expect.any(String),
+      "prisma:validate": expect.any(String),
     });
+  });
+
+  it("runs browser smoke tests against a fresh production build", () => {
+    expect(packageManifest.scripts?.["test:e2e"]).toContain("npm run build");
+    expect(packageManifest.scripts?.["test:e2e"]).toContain("npm run start");
   });
 });
