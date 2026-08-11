@@ -12,8 +12,8 @@
     "prisma:validate": "DATABASE_URL=postgresql://prisma:prisma@127.0.0.1:5432/fidelis prisma validate",
     "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "vitest run",
-    "test:e2e": "npm run build && PLAYWRIGHT_WEB_SERVER='npm run start -- --hostname 127.0.0.1 --port 3100' playwright test",
-    "test:e2e:headed": "npm run build && PLAYWRIGHT_WEB_SERVER='npm run start -- --hostname 127.0.0.1 --port 3100' playwright test --headed"
+    "test:e2e": "npm run build && AUTH_SECRET=fidelis-local-e2e-only-test-secret-2026 AUTH_TRUST_HOST=true PLAYWRIGHT_WEB_SERVER='npm run start -- --hostname 127.0.0.1 --port 3100' playwright test",
+    "test:e2e:headed": "npm run build && AUTH_SECRET=fidelis-local-e2e-only-test-secret-2026 AUTH_TRUST_HOST=true PLAYWRIGHT_WEB_SERVER='npm run start -- --hostname 127.0.0.1 --port 3100' playwright test --headed"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.3",
