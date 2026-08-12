@@ -19,6 +19,7 @@ import {
   ChevronsLeft,
   ChevronsRight,
   Bell,
+  CreditCard,
 } from "lucide-react";
 
 const authPages = [
@@ -92,6 +93,7 @@ function AppLayoutInner({ children }: AppLayoutProps) {
     { label: "Dashboard", href: "/app", icon: LayoutDashboard },
     { label: "AI Tools", href: "/app/tools", icon: Bot },
     { label: "Workshops", href: "/app/workshops", icon: BookOpen },
+    { label: "Billing", href: "/app/billing", icon: CreditCard },
   ];
   const workspaceItems = [
     ...(isSchoolAdmin || isAdmin
@@ -104,6 +106,7 @@ function AppLayoutInner({ children }: AppLayoutProps) {
       ? [{ label: "My Profile", href: "/app/profile", icon: User }]
       : []),
     ...(isAdmin ? [{ label: "School Approvals", href: "/app/dashboard/admin/schools", icon: Shield }] : []),
+    ...(isAdmin ? [{ label: "Consultancy CRM", href: "/app/dashboard/admin/crm", icon: Shield }] : []),
   ];
   const adminGroup = workspaceItems.length > 0
     ? [{ section: isAdmin ? "Platform" : "Workspace", items: workspaceItems }]
