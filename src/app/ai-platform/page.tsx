@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "AI Platform for Teachers",
   description:
-    "20+ structured AI tools for teachers. Lesson planning, assessment, rubrics, feedback, and more. Zero prompt engineering required. Built for international school educators.",
+    "Structured AI tools for teachers: lesson planning, assessment, rubrics, feedback, and more. Designed for international school educators.",
 };
 
 const tools = [
@@ -51,7 +51,7 @@ export default function AIPlatformPage() {
           <div className="container-wide">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-[family-name:var(--font-heading)] font-bold text-navy mb-4">
-                22 tools. One platform.
+                Guided tools. One platform.
               </h2>
               <p className="text-charcoal-light max-w-xl mx-auto">
                 Every tool is designed around a structured form — select your

@@ -6,7 +6,8 @@ import { prisma } from "@/lib/prisma";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
-  session: { strategy: "database" },
+  // Credentials authentication requires signed JWT sessions in Auth.js v5.
+  session: { strategy: "jwt" },
   pages: {
     signIn: "/app/login",
   },
@@ -33,7 +34,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return null;
         }
 
-        if (!user.isActive) {
+        if (!user.isActive || !user.emailVerified) {
           return null;
         }
 
@@ -57,10 +58,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (account?.provider === "credentials") {
         const existingUser = await prisma.user.findUnique({
           where: { id: user.id },
-          select: { isActive: true },
+          select: { isActive: true, emailVerified: true },
         });
 
-        if (!existingUser || !existingUser.isActive) {
+        if (!existingUser || !existingUser.isActive || !existingUser.emailVerified) {
           return false;
         }
 
@@ -73,13 +74,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
       return true;
     },
-    async session({ session, user }) {
-      if (session.user) {
-        session.user.id = user.id;
+    async session({ session, token }) {
+      const userId = token.sub;
+      if (session.user && userId) {
+        const sessionUser = session.user as typeof session.user & { roles: { name: string; displayName: string }[] };
+        sessionUser.id = userId;
 
         // Fetch user roles for the session
         const userRoles = await prisma.userRole.findMany({
-          where: { userId: user.id },
+          where: { userId },
           include: {
             role: {
               select: { name: true, displayName: true },
@@ -87,7 +90,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           },
         });
 
-        session.user.roles = userRoles.map((ur) => ({
+        sessionUser.roles = userRoles.map((ur) => ({
           name: ur.role.name,
           displayName: ur.role.displayName ?? ur.role.name,
         }));

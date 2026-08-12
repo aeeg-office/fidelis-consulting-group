@@ -120,8 +120,12 @@ async function main() {
   }
   console.log(`✅ Role-permission mappings created`);
 
-  // 5. Create admin user
-  const hashedPassword = await bcrypt.hash("admin123", 12);
+  // 5. Create a bootstrap admin only when an explicit non-default secret is supplied.
+  const bootstrapPassword = process.env.SEED_ADMIN_PASSWORD;
+  if (!bootstrapPassword || bootstrapPassword.length < 12) {
+    throw new Error("SEED_ADMIN_PASSWORD must be set to a strong password before seeding an administrator.");
+  }
+  const hashedPassword = await bcrypt.hash(bootstrapPassword, 12);
   const adminUser = await prisma.user.upsert({
     where: { email: "admin@fidelisconsultingroup.com" },
     update: {},
@@ -132,7 +136,7 @@ async function main() {
       isActive: true,
     },
   });
-  console.log(`✅ Admin user created: admin@fidelisconsultingroup.com / admin123`);
+  console.log("✅ Bootstrap administrator created or retained.");
 
   const adminRole = await prisma.role.findUnique({ where: { name: "admin" } });
   if (adminRole) {

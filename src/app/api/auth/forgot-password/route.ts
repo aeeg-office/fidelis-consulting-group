@@ -52,9 +52,8 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // TODO: Send password reset email (integration with email service)
-    // For now, log the token for development
-    console.log(`[DEV] Password reset token for ${normalizedEmail}: ${token}`);
+    // Email delivery must be configured before this flow is enabled in production.
+    // Never log reset secrets; the caller receives the same generic response either way.
 
     return NextResponse.json(
       { message: "If an account with that email exists, a password reset link has been sent." },

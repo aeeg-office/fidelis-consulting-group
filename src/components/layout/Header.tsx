@@ -3,13 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/Button";
 import { useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 
-// In a real setup, this would come from next-intl or similar i18n library
-// For now, we use a simple locale-based approach
-const locale = "en";
+// Header labels are selected from the active public route locale.
 const messages = {
   en: {
     nav: {
@@ -80,7 +77,8 @@ const navItems = [
 export function Header() {
   const pathname = usePathname() ?? "/";
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const t = messages[locale as keyof typeof messages].nav;
+  const isArabic = pathname === "/ar" || pathname.startsWith("/ar/");
+  const t = messages[isArabic ? "ar" : "en"].nav;
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-sm border-b border-border">
@@ -88,7 +86,7 @@ export function Header() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <div className="w-10 h-10 bg-navy rounded-lg flex items-center justify-center">
-            <span className="text-gold font-bold text-lg font-[family-name:var(--font-heading)]">F</span>
+            <span className="text-gold-light font-bold text-lg font-[family-name:var(--font-heading)]">F</span>
           </div>
           <div className="hidden sm:block">
             <span className="font-[family-name:var(--font-heading)] font-bold text-navy text-lg leading-tight block">
@@ -147,15 +145,18 @@ export function Header() {
           >
             {t.login}
           </Link>
-          <Button variant="primary" size="sm" className="hidden sm:inline-flex">
+          <Link
+            href="/app/register"
+            className="hidden sm:inline-flex h-9 items-center justify-center rounded-md bg-gold px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-gold-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
+          >
             {t.getStarted}
-          </Button>
+          </Link>
           {/* Language Switcher */}
           <Link
-            href="/ar"
+            href={isArabic ? "/" : "/ar"}
             className="text-sm font-medium text-charcoal-light hover:text-navy transition-colors px-2 py-1 border border-border rounded"
           >
-            العربية
+            {isArabic ? "English" : "العربية"}
           </Link>
           {/* Mobile menu button */}
           <button
@@ -211,9 +212,13 @@ export function Header() {
               >
                 {t.login}
               </Link>
-              <Button variant="primary" fullWidth className="mt-2" onClick={() => setMobileMenuOpen(false)}>
+              <Link
+                href="/app/register"
+                className="mt-2 flex h-11 w-full items-center justify-center rounded-md bg-gold px-4 font-semibold text-white shadow-sm transition-colors hover:bg-gold-light"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 {t.getStarted}
-              </Button>
+              </Link>
             </div>
           </div>
         </div>

@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
+import { siteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
+  metadataBase: siteUrl,
+  applicationName: "Fidelis Consulting Group",
   title: {
     default: "Fidelis Consulting Group | Supporting Schools. Developing People. Improving Learning.",
     template: "%s | Fidelis Consulting Group",
@@ -60,6 +63,9 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-white font-[family-name:var(--font-body)] text-charcoal antialiased">
+        <a href="#main-content" className="sr-only fixed left-4 top-4 z-[100] rounded bg-navy px-4 py-2 font-semibold text-white focus:not-sr-only">
+          Skip to main content
+        </a>
         {children}
       </body>
     </html>

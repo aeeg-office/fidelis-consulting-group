@@ -1,25 +1,15 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { signIn } from "next-auth/react";
+import { useState } from "react";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { Card, CardContent } from "@/components/ui/Card";
 import { cn } from "@/lib/utils";
-import { Eye, EyeOff, Loader2, CheckCircle, Search, X } from "lucide-react";
+import { Eye, EyeOff, Loader2, CheckCircle } from "lucide-react";
 
-const ROLES = [
-  { value: "teacher", label: "Teacher" },
-  { value: "school_admin", label: "School Administrator" },
-] as const;
-
-interface School {
-  id: string;
-  name: string;
-  city: string | null;
-  country: string | null;
-}
+const ROLES = [{ value: "independent_teacher", label: "Independent Teacher" }] as const;
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -29,8 +19,7 @@ export default function RegisterPage() {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "teacher",
-    schoolId: "",
+    role: "independent_teacher",
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -39,65 +28,22 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
-  // School search
-  const [schoolQuery, setSchoolQuery] = useState("");
-  const [schoolResults, setSchoolResults] = useState<School[]>([]);
-  const [selectedSchool, setSelectedSchool] = useState<School | null>(null);
-  const [isSearchingSchool, setIsSearchingSchool] = useState(false);
-  const [showSchoolDropdown, setShowSchoolDropdown] = useState(false);
 
   const updateField = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const searchSchools = useCallback(async (query: string) => {
-    setSchoolQuery(query);
-    if (query.length < 2) {
-      setSchoolResults([]);
-      setShowSchoolDropdown(false);
-      return;
-    }
-
-    setIsSearchingSchool(true);
-    try {
-      const res = await fetch(`/api/schools/search?q=${encodeURIComponent(query)}`);
-      if (res.ok) {
-        const data = await res.json();
-        setSchoolResults(data.schools ?? []);
-        setShowSchoolDropdown(data.schools?.length > 0);
-      }
-    } catch {
-      // silently fail — school lookup is optional
-    } finally {
-      setIsSearchingSchool(false);
-    }
-  }, []);
-
-  const selectSchool = (school: School) => {
-    setSelectedSchool(school);
-    setFormData((prev) => ({ ...prev, schoolId: school.id }));
-    setSchoolQuery(school.name);
-    setShowSchoolDropdown(false);
-  };
-
-  const clearSchool = () => {
-    setSelectedSchool(null);
-    setFormData((prev) => ({ ...prev, schoolId: "" }));
-    setSchoolQuery("");
-    setSchoolResults([]);
-  };
 
   const validateForm = (): string | null => {
     if (!formData.fullName.trim()) return "Full name is required.";
     if (!formData.email.trim()) return "Email is required.";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) return "Invalid email format.";
-    if (formData.password.length < 8) return "Password must be at least 8 characters.";
+    if (formData.password.length < 12) return "Password must be at least 12 characters.";
     if (formData.password !== formData.confirmPassword) return "Passwords do not match.";
     return null;
   };
 
-  const handleSubmit = useCallback(
-    async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       setError("");
 
@@ -118,7 +64,6 @@ export default function RegisterPage() {
             email: formData.email.toLowerCase().trim(),
             password: formData.password,
             role: formData.role,
-            schoolId: formData.schoolId || undefined,
           }),
         });
 
@@ -135,9 +80,7 @@ export default function RegisterPage() {
         setError("Network error. Please check your connection and try again.");
         setIsLoading(false);
       }
-    },
-    [formData]
-  );
+  };
 
   if (success) {
     return (
@@ -321,7 +264,7 @@ export default function RegisterPage() {
                 <label className="block text-sm font-medium text-charcoal mb-1.5">
                   I am a...
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3">
                   {ROLES.map((role) => (
                     <button
                       key={role.value}
@@ -340,64 +283,9 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              {/* School Lookup */}
-              <div>
-                <label
-                  htmlFor="schoolSearch"
-                  className="block text-sm font-medium text-charcoal mb-1.5"
-                >
-                  School <span className="text-charcoal-light font-normal">(optional)</span>
-                </label>
-                <div className="relative">
-                  {selectedSchool ? (
-                    <div className="flex items-center h-11 px-4 rounded-md border border-border bg-ivory/50 text-sm text-charcoal">
-                      <span className="flex-1 truncate">{selectedSchool.name}</span>
-                      <button
-                        type="button"
-                        onClick={clearSchool}
-                        className="text-charcoal-light hover:text-charcoal ml-2"
-                        aria-label="Clear school selection"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="relative">
-                      <input
-                        id="schoolSearch"
-                        type="text"
-                        value={schoolQuery}
-                        onChange={(e) => searchSchools(e.target.value)}
-                        placeholder="Search for your school..."
-                        className="w-full h-11 pl-10 pr-4 rounded-md border border-border bg-white text-charcoal placeholder:text-charcoal-light/50 text-sm focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent transition-all"
-                      />
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-charcoal-light" />
-                    </div>
-                  )}
-
-                  {/* School dropdown */}
-                  {showSchoolDropdown && schoolResults.length > 0 && (
-                    <div className="absolute z-20 top-full mt-1 left-0 right-0 bg-white border border-border rounded-md shadow-lg max-h-48 overflow-y-auto">
-                      {schoolResults.map((school) => (
-                        <button
-                          key={school.id}
-                          type="button"
-                          onClick={() => selectSchool(school)}
-                          className="w-full text-left px-4 py-3 text-sm text-charcoal hover:bg-ivory transition-colors border-b border-border-light last:border-b-0"
-                        >
-                          <span className="font-medium">{school.name}</span>
-                          {school.city && (
-                            <span className="text-charcoal-light ml-1">
-                              — {school.city}
-                              {school.country ? `, ${school.country}` : ""}
-                            </span>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
+              <p className="rounded-md bg-ivory p-3 text-sm text-charcoal-light">
+                School-linked access is provisioned by your school administrator. This form creates an independent educator account only.
+              </p>
 
               {/* Submit */}
               <Button
