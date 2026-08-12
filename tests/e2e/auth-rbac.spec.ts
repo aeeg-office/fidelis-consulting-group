@@ -1,11 +1,18 @@
 import { expect, test } from "@playwright/test";
 
-test("protected role dashboards redirect unauthenticated visitors", async ({ page }) => {
-  await page.goto("/app/dashboard/admin", { waitUntil: "domcontentloaded" });
-  await expect(page).toHaveURL(/\/app\/login$/);
+const PROTECTED = [
+  "/app/dashboard/admin",
+  "/app/dashboard/teacher",
+  "/app/school",
+  "/app/hod",
+  "/app/dashboard/admin/schools",
+];
 
-  await page.goto("/app/dashboard/teacher", { waitUntil: "domcontentloaded" });
-  await expect(page).toHaveURL(/\/app\/login$/);
+test("protected role workspaces redirect unauthenticated visitors", async ({ page }) => {
+  for (const path of PROTECTED) {
+    await page.goto(path, { waitUntil: "domcontentloaded" });
+    await expect(page).toHaveURL(/\/app\/login$/);
+  }
 });
 
 test("public registration does not expose school-role selection", async ({ page }) => {

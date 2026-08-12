@@ -9,8 +9,6 @@ import {
   LayoutDashboard,
   Bot,
   BookOpen,
-  GraduationCap,
-  FileText,
   Settings,
   LogOut,
   Menu,
@@ -22,32 +20,6 @@ import {
   ChevronsRight,
   Bell,
 } from "lucide-react";
-
-const sidebarItems = [
-  {
-    section: "Main",
-    items: [
-      { label: "Dashboard", href: "/app", icon: LayoutDashboard },
-      { label: "AI Tools", href: "/app/ai-tools", icon: Bot },
-      { label: "Workshops", href: "/app/workshops", icon: BookOpen },
-      { label: "Courses", href: "/app/courses", icon: GraduationCap },
-    ],
-  },
-  {
-    section: "Content",
-    items: [
-      { label: "My Library", href: "/app/library", icon: FileText },
-    ],
-  },
-  {
-    section: "Admin",
-    items: [
-      { label: "School", href: "/app/school", icon: School },
-      { label: "Users & Roles", href: "/app/users", icon: Shield },
-      { label: "Settings", href: "/app/settings", icon: Settings },
-    ],
-  },
-];
 
 const authPages = [
   "/app/login",
@@ -109,6 +81,38 @@ function AppLayoutInner({ children }: AppLayoutProps) {
     if (href === "/app") return pathname === "/app";
     return pathname.startsWith(href);
   };
+
+  const userRoles = session?.user?.roles?.map((r) => r.name) ?? [];
+  const isAdmin = userRoles.includes("admin");
+  const isSchoolAdmin = userRoles.includes("school_admin");
+  const isHod = userRoles.includes("hod");
+  const isTeacher = userRoles.includes("teacher") || userRoles.includes("independent_teacher");
+
+  const mainItems = [
+    { label: "Dashboard", href: "/app", icon: LayoutDashboard },
+    { label: "AI Tools", href: "/app/tools", icon: Bot },
+    { label: "Workshops", href: "/app/workshops", icon: BookOpen },
+  ];
+  const workspaceItems = [
+    ...(isSchoolAdmin || isAdmin
+      ? [{ label: "School", href: "/app/school", icon: School }]
+      : []),
+    ...(isHod || isAdmin
+      ? [{ label: "Department", href: "/app/hod", icon: BookOpen }]
+      : []),
+    ...(isTeacher || isSchoolAdmin || isHod
+      ? [{ label: "My Profile", href: "/app/profile", icon: User }]
+      : []),
+    ...(isAdmin ? [{ label: "School Approvals", href: "/app/dashboard/admin/schools", icon: Shield }] : []),
+  ];
+  const adminGroup = workspaceItems.length > 0
+    ? [{ section: isAdmin ? "Platform" : "Workspace", items: workspaceItems }]
+    : [];
+  const sidebarItems = [
+    { section: "Main", items: mainItems },
+    ...adminGroup,
+    { section: "Account", items: [{ label: "Settings", href: "/app/settings", icon: Settings }] },
+  ];
 
   return (
     <div className="min-h-screen bg-ivory">
