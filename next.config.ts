@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { securityHeaderEntries } from "./src/lib/security-headers";
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: ["127.0.0.1", "localhost"],
@@ -7,6 +8,9 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizePackageImports: ["lucide-react"],
+  },
+  async headers() {
+    return [...securityHeaderEntries()];
   },
 };
 

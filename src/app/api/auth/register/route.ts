@@ -3,9 +3,20 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { randomUUID } from "crypto";
 import { validatePublicRegistration } from "@/lib/public-registration";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
   try {
+    // Brute-force/abuse protection keyed by client IP.
+    const ipKey = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+    const rl = rateLimit(`register:${ipKey}`, 10, 60_000);
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: "Too many registration attempts. Please try again later." },
+        { status: 429 },
+      );
+    }
+
     const registration = validatePublicRegistration(await request.json());
     if (!registration.ok) {
       return NextResponse.json({ error: registration.error }, { status: 400 });
