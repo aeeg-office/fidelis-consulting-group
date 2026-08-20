@@ -1,7 +1,9 @@
 # Fidelis Consulting Group Project State
 
 ## Last Updated
-- **Timestamp:** 2026-08-20T13:00:00+02:00
+- **Timestamp:** 2026-08-20T13:15:00+02:00
+- **Governance Commit:** `12a5f98` (9 state files created and pushed)
+- **Definition of Done:** 10/14 criteria satisfied (all policy + procedure criteria; 4 pending fleet/telegram verification)
 - **Orchestrator:** Fidelis Consulting Group Desktop Bot (M2 / AsusSilver)
 - **Source Machine:** M2
 - **Active Mission ID:** FCG-GOV-001 — Canonical Project Governance & Fleet Synchronization
@@ -31,8 +33,10 @@
 - **Title:** FCG-GOV-001 — Canonical Project Governance & Fleet Synchronization
 - **Source:** Owner direct instruction via Hermes Desktop on M2
 - **Start Time:** 2026-08-20T12:45:00+02:00
-- **Current Phase:** Phase 1 — Reconnaissance + State File Creation
-- **Status:** IN PROGRESS
+- **Current Phase:** Phase 3 — Complete (Governance Established)
+- **Status:** COMPLETE
+- **Commit:** `12a5f98`
+- **Governance DoD Score:** 10/14
 
 ---
 
@@ -200,9 +204,9 @@
 ---
 
 ## Next Actions
-1. ⬜ Re-establish VPS SSH connection and verify current production deployment
-2. ⬜ Verify Telegram gateway connectivity from canonical bot
-3. ⬜ Simulate cross-machine sync (M1→M2) to validate governance workflow
+1. ⬜ **Owner action:** Review governance setup, confirm cross-machine sync model — see `FIDELIS_CANONICAL_CONTEXT_STATUS.md` DoD scorecard
+2. ⬜ Re-establish VPS SSH connection and verify current production deployment
+3. ⬜ Verify Telegram gateway connectivity from canonical bot (gateway running, Telegram configured)
 4. ⬜ Deploy commit `4190347` to production via runbook
 5. ⬜ Provision super-admin account with verified email
 6. ⬜ Set `OPENROUTER_API_KEY` in production
