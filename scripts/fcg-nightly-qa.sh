@@ -93,6 +93,7 @@ declare -a PUBLIC_ROUTES=(
 
 PASS_COUNT=0
 FAIL_COUNT=0
+ROUTE_COUNT=${#PUBLIC_ROUTES[@]}
 NOTES=""
 for route in "${PUBLIC_ROUTES[@]}"; do
   CODE=$(curl -sS -o /dev/null -w "%{http_code}" "$LOCAL_URL$route" --max-time 10 2>/dev/null || echo "000")
@@ -109,7 +110,6 @@ for route in "${PUBLIC_ROUTES[@]}"; do
     fi
   fi
 done
-unset "PUBLIC_ROUTES"
 
 # 2b. 404 behavior
 NOT_FOUND_CODE=$(curl -sS -o /dev/null -w "%{http_code}" "$LOCAL_URL/nonexistent-page" --max-time 10 2>/dev/null || echo "000")
@@ -159,6 +159,7 @@ declare -a PROTECTED=(
   "/api/admin/schools" "/api/school/overview"
   "/api/hod/department"
 )
+PROTECTED_COUNT=${#PROTECTED[@]}
 
 for route in "${PROTECTED[@]}"; do
   CODE=$(curl -sS -o /dev/null -w "%{http_code}" "$LOCAL_URL$route" --max-time 10 2>/dev/null || echo "000")
@@ -231,14 +232,14 @@ Failures: $failures
    OpenRouter: $OR_KEY
 
 2. Public Website
-   Routes: $(echo "$report" | grep -c "PASS.*HTTP 200") passed / ${#PUBLIC_ROUTES[@]} total
+   Routes: $PASS_COUNT / $ROUTE_COUNT healthy
    404: HTTP $NOT_FOUND_CODE
    Sitemap: $SITEMAP_CODE | Robots: $ROBOTS_CODE
    Arabic: $AR_CODE ($AR_LANG)
 
 3. Auth Pages: login=$LOGIN_PAGE_CODE register=$REGISTER_PAGE_CODE
 
-4. Protected Routes: ${#PROTECTED[@]} tested
+4. Protected Routes: $PROTECTED_COUNT tested
 
 5. Performance: slow routes=$SLOW_ROUTES
 
