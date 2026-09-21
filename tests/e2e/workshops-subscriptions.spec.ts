@@ -97,7 +97,7 @@ test.describe("Consultancy workspace", () => {
       });
     });
     await page.goto("/app/hod", { waitUntil: "domcontentloaded" });
-    await expect(page.getByRole("main")).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible({ timeout: 10_000 });
     await expect(page).not.toHaveURL(/\/app\/login/);
   });
 });

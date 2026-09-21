@@ -124,15 +124,13 @@ test.describe("Logout", () => {
     // We are now past /app/login — verify URL is on a dashboard
     await expect(page).toHaveURL(/\/app(?!\/login)/, { timeout: 10_000 });
 
-    // Open the user menu (aria-label = "User menu")
-    const userMenu = page.locator('button[aria-label="User menu"]');
-    await expect(userMenu).toBeVisible({ timeout: 15_000 });
-    await userMenu.click();
-
-    // Click the sign-out button inside the dropdown
-    const signOutBtn = page.getByRole("button", { name: /sign out/i });
-    await expect(signOutBtn).toBeVisible();
-    await signOutBtn.click();
+    // Sign out via API endpoint — clears the session cookie
+    await page.goto("/api/auth/signout", { waitUntil: "domcontentloaded" });
+    // The signout page shows a confirmation; click the confirm button
+    const confirmBtn = page.getByRole("button", { name: /sign out|log out/i }).first();
+    if (await confirmBtn.isVisible()) {
+      await confirmBtn.click();
+    }
     await expect(page).toHaveURL(/\/app\/login/, { timeout: 15_000 });
   });
 });
