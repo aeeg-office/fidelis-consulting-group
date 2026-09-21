@@ -1,12 +1,14 @@
 import { expect, test } from "@playwright/test";
+import { loginAs } from "./helpers";
 
 /**
  * AI Platform — E2E browser tests
  *
  * Verify AI tool UI: presets, submit, response display, refinement,
- * and graceful error states.  The production nightly audit exercises
- * the real API with a QA account; these tests mock the API layer so
- * CI runs are cost-free and deterministic.
+ * and graceful error states.
+ *
+ * Authenticated tests use real login with seeded QA users; API calls
+ * are still mocked so CI runs are cost-free and deterministic.
  */
 
 const AI_TOOLS = [
@@ -16,28 +18,11 @@ const AI_TOOLS = [
   { path: "/app/tools/feedback", name: "Feedback" },
 ];
 
-function mockSession(page: import("@playwright/test").Page) {
-  return page.route("**/api/auth/session", async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify({
-        user: {
-          id: "user-ai-qa",
-          name: "AI QA User",
-          email: "ai.nightly-qa@example.test",
-          role: "teacher",
-        },
-        expires: "2099-12-31T00:00:00.000Z",
-      }),
-    });
-  });
-}
-
 test.describe("AI tools", () => {
   for (const tool of AI_TOOLS) {
     test(`${tool.name} UI loads and submits for an authorized teacher`, async ({ page }) => {
-      await mockSession(page);
+      // Real login with seeded QA teacher
+      await loginAs(page, "qa.teacher@example.test");
 
       // Intercept the AI API call with a small structured response
       let aiPayload: unknown;
@@ -78,7 +63,9 @@ test.describe("AI tools", () => {
   }
 
   test("AI tool shows graceful error when provider is unavailable", async ({ page }) => {
-    await mockSession(page);
+    // Real login with seeded QA teacher
+    await loginAs(page, "qa.teacher@example.test");
+
     await page.route("**/api/ai/**", async (route) => {
       if (route.request().method() === "POST") {
         await route.fulfill({

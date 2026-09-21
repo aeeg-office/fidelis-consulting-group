@@ -1,4 +1,7 @@
 import { expect, test } from "@playwright/test";
+import { loginAs } from "./helpers";
+
+const QA_TEACHER = "qa.teacher@example.test";
 
 /**
  * Registration flow — E2E browser tests
@@ -30,17 +33,14 @@ test.describe("Registration", () => {
     await page.goto("/app/register", { waitUntil: "domcontentloaded" });
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(/register|create account/i);
 
-    // Fill form
-    await page.getByLabel(/full name/i).fill("Sarah Thompson");
-    await page.getByLabel(/email/i).fill("sarah.nightly-qa@example.test");
-    await page.getByLabel(/password/i).fill("SecurePass123!");
-    await page.getByLabel(/confirm password/i).fill("SecurePass123!");
+    // Fill form — use exact label selectors
+    await page.getByLabel("Full name", { exact: true }).fill("Sarah Thompson");
+    await page.getByLabel("Email address", { exact: true }).fill("sarah.nightly-qa@example.test");
+    await page.getByLabel("Password", { exact: true }).fill("SecurePass123!");
+    await page.getByLabel("Confirm password", { exact: true }).fill("SecurePass123!");
 
-    // Select role
-    await page.getByLabel(/i am an?/i).selectOption("independent_teacher");
-
-    // Accept terms
-    await page.getByLabel(/terms.*conditions/i).check();
+    // Select role — the register form uses toggle buttons, not a <select>
+    await page.getByRole("button", { name: /independent teacher/i }).click();
 
     // Submit
     await page.getByRole("button", { name: /register|create|sign up/i }).click();
@@ -56,10 +56,10 @@ test.describe("Registration", () => {
 
   test("registration rejects mismatched passwords", async ({ page }) => {
     await page.goto("/app/register", { waitUntil: "domcontentloaded" });
-    await page.getByLabel(/full name/i).fill("Test User");
-    await page.getByLabel(/email/i).fill("test@example.test");
-    await page.getByLabel(/password/i).fill("Password123!");
-    await page.getByLabel(/confirm password/i).fill("DifferentPass456!");
+    await page.getByLabel("Full name", { exact: true }).fill("Test User");
+    await page.getByLabel("Email address", { exact: true }).fill("test@example.test");
+    await page.getByLabel("Password", { exact: true }).fill("Password123!");
+    await page.getByLabel("Confirm password", { exact: true }).fill("DifferentPass456!");
     await page.getByRole("button", { name: /register|create|sign up/i }).click();
 
     await expect(page.getByText(/passwords do not match|must match/i)).toBeVisible();
@@ -75,12 +75,12 @@ test.describe("Registration", () => {
     });
 
     await page.goto("/app/register", { waitUntil: "domcontentloaded" });
-    await page.getByLabel(/full name/i).fill("Existing User");
-    await page.getByLabel(/email/i).fill("existing@example.test");
-    await page.getByLabel(/password/i).fill("Password123!");
-    await page.getByLabel(/confirm password/i).fill("Password123!");
-    await page.getByLabel(/i am an?/i).selectOption("independent_teacher");
-    await page.getByLabel(/terms.*conditions/i).check();
+    await page.getByLabel("Full name", { exact: true }).fill("Existing User");
+    await page.getByLabel("Email address", { exact: true }).fill("existing@example.test");
+    await page.getByLabel("Password", { exact: true }).fill("Password123!");
+    await page.getByLabel("Confirm password", { exact: true }).fill("Password123!");
+    // Role: use button click instead of nonexistent select
+    await page.getByRole("button", { name: /independent teacher/i }).click();
     await page.getByRole("button", { name: /register|create|sign up/i }).click();
 
     await expect(page.getByText(/already exists/i)).toBeVisible();
@@ -89,47 +89,23 @@ test.describe("Registration", () => {
 
 test.describe("Login", () => {
   test("login form accepts valid credentials", async ({ page }) => {
-    // Mock successful login
-    await page.route("**/api/auth/callback/credentials", async (route) => {
-      if (route.request().method() === "POST") {
-        await route.fulfill({
-          status: 200,
-          contentType: "application/json",
-          body: JSON.stringify({ url: "/app/dashboard/teacher" }),
-        });
-      } else {
-        await route.continue();
-      }
-    });
-
+    // Navigate to login, verify heading, then perform real login with seeded QA user
     await page.goto("/app/login", { waitUntil: "domcontentloaded" });
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText(/sign in|login/i);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(/welcome back/i);
 
-    await page.getByLabel(/email/i).fill("teacher@example.test");
-    await page.getByLabel(/password/i).fill("ValidPass123!");
-    await page.getByRole("button", { name: /sign in|login/i }).click();
+    await page.getByLabel("Email address", { exact: true }).fill(QA_TEACHER);
+    await page.getByLabel("Password", { exact: true }).fill("NightlyQA-E2E-Password-2026");
+    await page.getByRole("button", { name: /sign in/i }).click();
 
-    // Should redirect to dashboard
-    await expect(page).toHaveURL(/\/app\/dashboard/);
+    // Should redirect away from /app/login to a dashboard
+    await expect(page).toHaveURL(/\/app(?!\/login)/, { timeout: 15_000 });
   });
 
   test("login shows error for invalid password", async ({ page }) => {
-    await page.route("**/api/auth/callback/credentials", async (route) => {
-      if (route.request().method() === "POST") {
-        await route.fulfill({
-          status: 401,
-          contentType: "application/json",
-          body: JSON.stringify({ error: "Invalid email or password" }),
-        });
-      } else {
-        await route.continue();
-      }
-    });
-
     await page.goto("/app/login", { waitUntil: "domcontentloaded" });
-    await page.getByLabel(/email/i).fill("teacher@example.test");
-    await page.getByLabel(/password/i).fill("WrongPass!");
-    await page.getByRole("button", { name: /sign in|login/i }).click();
+    await page.getByLabel("Email address", { exact: true }).fill(QA_TEACHER);
+    await page.getByLabel("Password", { exact: true }).fill("WrongPass!");
+    await page.getByRole("button", { name: /sign in/i }).click();
 
     await expect(page.getByText(/invalid email or password/i)).toBeVisible();
   });
@@ -144,35 +120,15 @@ test.describe("Login", () => {
 
 test.describe("Logout", () => {
   test("authenticated user can log out and is redirected to login", async ({ page }) => {
-    // Mock auth session
-    await page.route("**/api/auth/session", async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          user: { id: "1", name: "Test Teacher", email: "teacher@example.test", role: "teacher" },
-          expires: "2099-12-31T00:00:00.000Z",
-        }),
-      });
-    });
-
-    // Visit a protected page
-    await page.goto("/app/dashboard/teacher", { waitUntil: "domcontentloaded" });
+    // Log in with a real seeded QA teacher account
+    await loginAs(page, QA_TEACHER);
     await expect(page.getByText(/dashboard/i)).toBeVisible();
 
-    // Find and click logout
+    // Find and click sign out
     const logoutButton = page.getByRole("button", { name: /sign out|log out|logout/i });
     if (await logoutButton.isVisible()) {
-      // Mock the logout callback
-      await page.route("**/api/auth/signout", async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: "application/json",
-          body: JSON.stringify({ url: "/app/login" }),
-        });
-      });
       await logoutButton.click();
-      await expect(page).toHaveURL(/\/app\/login/);
+      await expect(page).toHaveURL(/\/app\/login/, { timeout: 15_000 });
     }
   });
 });

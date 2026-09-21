@@ -147,7 +147,52 @@ async function main() {
     });
   }
 
-  // 6. Create subscription plans
+  // 6. Create QA/test users for E2E tests (CI and local development)
+  const qaPassword = process.env.SEED_QA_PASSWORD || "NightlyQA-E2E-Password-2026";
+  const qaHashedPassword = await bcrypt.hash(qaPassword, 12);
+  const qaEmailVerified = new Date();
+
+  interface QaUserDef {
+    email: string;
+    fullName: string;
+    roleName: string;
+  }
+
+  const qaUsers: QaUserDef[] = [
+    { email: "qa.admin@example.test", fullName: "QA Admin", roleName: "admin" },
+    { email: "qa.school-admin@example.test", fullName: "QA School Admin", roleName: "school_admin" },
+    { email: "qa.hod@example.test", fullName: "QA Head of Department", roleName: "hod" },
+    { email: "qa.teacher@example.test", fullName: "QA Teacher", roleName: "teacher" },
+    { email: "qa.independent-teacher@example.test", fullName: "QA Independent Teacher", roleName: "independent_teacher" },
+    { email: "qa.workshop-participant@example.test", fullName: "QA Workshop Participant", roleName: "workshop_participant" },
+  ];
+
+  for (const qaUser of qaUsers) {
+    const role = await prisma.role.findUnique({ where: { name: qaUser.roleName } });
+    if (!role) {
+      console.warn(`⚠️  Role "${qaUser.roleName}" not found — skipping QA user for it.`);
+      continue;
+    }
+    const user = await prisma.user.upsert({
+      where: { email: qaUser.email },
+      update: {},
+      create: {
+        email: qaUser.email,
+        passwordHash: qaHashedPassword,
+        fullName: qaUser.fullName,
+        isActive: true,
+        emailVerified: qaEmailVerified,
+      },
+    });
+    await prisma.userRole.upsert({
+      where: { userId_roleId: { userId: user.id, roleId: role.id } },
+      update: {},
+      create: { userId: user.id, roleId: role.id },
+    });
+  }
+  console.log(`✅ ${qaUsers.length} QA users created`);
+
+  // 7. Create subscription plans
   const plans = [
     { name: "Teacher Basic", code: "teacher_basic", type: "teacher", priceMonthly: 9, maxTeachers: 1, sortOrder: 1 },
     { name: "Teacher Professional", code: "teacher_pro", type: "teacher", priceMonthly: 19, maxTeachers: 1, sortOrder: 2 },

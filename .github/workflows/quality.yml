@@ -11,7 +11,25 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: fidelis_ci_e2e_2026
+          POSTGRES_DB: fidelis
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql://postgres:fidelis_ci_e2e_2026@127.0.0.1:5432/fidelis
+      SEED_ADMIN_PASSWORD: ci-bootstrap-admin-e2e-2026
+      SEED_QA_PASSWORD: NightlyQA-E2E-Password-2026
+      AUTH_SECRET: fidelis-local-e2e-only-test-secret-2026
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -19,14 +37,15 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run prisma:validate
-      - run: npm run prisma:generate
+      - run: npx prisma generate
+      - run: npx prisma migrate deploy
+      - run: npx prisma db seed
       - run: npx playwright install --with-deps chromium
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run test:unit
       - run: npm run build
-      - run: PLAYWRIGHT_WEB_SERVER="npm run start -- --port 3100" npm run test:e2e
+      - run: AUTH_TRUST_HOST=true npm run test:e2e
       - name: Upload Playwright report on failure
         if: failure()
         uses: actions/upload-artifact@v4

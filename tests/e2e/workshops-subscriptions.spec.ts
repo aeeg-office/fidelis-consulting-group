@@ -1,35 +1,19 @@
 import { expect, test } from "@playwright/test";
+import { loginAs } from "./helpers";
 
 /**
  * Workshop, Subscriptions, Consultancy — E2E browser tests
  *
  * Verify workshop enrollment, subscription entitlement visibility,
- * and consultancy workspace access.  API responses are mocked for
- * deterministic CI runs; the production nightly audit (fcg-nightly-qa.sh)
- * exercises the real flows with QA accounts.
+ * and consultancy workspace access.
+ *
+ * Authenticated tests use real login with seeded QA users;
+ * API responses are still mocked for deterministic CI runs.
  */
-
-function mockSession(page: import("@playwright/test").Page, role = "teacher") {
-  return page.route("**/api/auth/session", async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify({
-        user: {
-          id: `user-${role}-qa`,
-          name: "QA User",
-          email: `${role}.nightly-qa@example.test`,
-          role,
-        },
-        expires: "2099-12-31T00:00:00.000Z",
-      }),
-    });
-  });
-}
 
 test.describe("Workshops", () => {
   test("workshop listing page loads for participant", async ({ page }) => {
-    await mockSession(page, "teacher");
+    await loginAs(page, "qa.teacher@example.test");
     await page.route("**/api/workshops", async (route) => {
       await route.fulfill({
         status: 200,
@@ -54,7 +38,7 @@ test.describe("Workshops", () => {
   });
 
   test("workshop enrollment button triggers API call", async ({ page }) => {
-    await mockSession(page, "teacher");
+    await loginAs(page, "qa.teacher@example.test");
     let enrollPayload: unknown;
     await page.route("**/api/workshops/**/enroll", async (route) => {
       enrollPayload = route.request().postDataJSON();
@@ -94,7 +78,7 @@ test.describe("Workshops", () => {
   });
 
   test("workshop certificate download available for completed workshop", async ({ page }) => {
-    await mockSession(page, "teacher");
+    await loginAs(page, "qa.teacher@example.test");
     await page.route("**/api/workshops/*", async (route) => {
       await route.fulfill({
         status: 200,
@@ -120,7 +104,7 @@ test.describe("Workshops", () => {
 
 test.describe("Subscriptions and entitlements", () => {
   test("billing status page loads for subscribed user", async ({ page }) => {
-    await mockSession(page, "teacher");
+    await loginAs(page, "qa.teacher@example.test");
     await page.route("**/api/billing/status", async (route) => {
       await route.fulfill({
         status: 200,
@@ -144,7 +128,7 @@ test.describe("Subscriptions and entitlements", () => {
   });
 
   test("expired subscription shows clear messaging and blocks paid tools", async ({ page }) => {
-    await mockSession(page, "teacher");
+    await loginAs(page, "qa.teacher@example.test");
     await page.route("**/api/billing/status", async (route) => {
       await route.fulfill({
         status: 200,
@@ -169,7 +153,7 @@ test.describe("Subscriptions and entitlements", () => {
 
 test.describe("Consultancy workspace", () => {
   test("HOD can access consultancy request workspace", async ({ page }) => {
-    await mockSession(page, "hod");
+    await loginAs(page, "qa.hod@example.test");
     await page.route("**/api/hod/**", async (route) => {
       await route.fulfill({
         status: 200,

@@ -6,14 +6,18 @@
     "dev": "next dev",
     "build": "npm run prisma:generate && next build",
     "start": "next start",
-    "lint": "eslint .",
-    "typecheck": "npm run prisma:generate && tsc --noEmit",
-    "prisma:generate": "prisma generate",
-    "prisma:validate": "DATABASE_URL=postgresql://prisma:prisma@127.0.0.1:5432/fidelis prisma validate",
+        "lint": "eslint .",
+        "typecheck": "npm run prisma:generate && tsc --noEmit",
+        "prisma:generate": "prisma generate",
+        "prisma:validate": "DATABASE_URL=postgresql://prisma:***@127.0.0.1:5432/fidelis prisma validate",
+        "db:seed": "npx ts-node --project prisma/tsconfig.seed.json prisma/seed.ts",
     "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "vitest run",
     "test:e2e": "npm run build && AUTH_SECRET=fidelis-local-e2e-only-test-secret-2026 AUTH_TRUST_HOST=true PLAYWRIGHT_WEB_SERVER='npm run start -- --hostname 127.0.0.1 --port 3100' playwright test",
     "test:e2e:headed": "npm run build && AUTH_SECRET=fidelis-local-e2e-only-test-secret-2026 AUTH_TRUST_HOST=true PLAYWRIGHT_WEB_SERVER='npm run start -- --hostname 127.0.0.1 --port 3100' playwright test --headed"
+  },
+  "prisma": {
+    "seed": "npx ts-node --project prisma/tsconfig.seed.json prisma/seed.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.3",
