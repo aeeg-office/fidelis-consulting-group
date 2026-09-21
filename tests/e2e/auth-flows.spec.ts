@@ -31,7 +31,7 @@ test.describe("Registration", () => {
     });
 
     await page.goto("/app/register", { waitUntil: "domcontentloaded" });
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText(/register|create account/i);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(/register|create.*account/i);
 
     // Fill form — use exact label selectors
     await page.getByLabel("Full name", { exact: true }).fill("Sarah Thompson");
@@ -122,13 +122,18 @@ test.describe("Logout", () => {
   test("authenticated user can log out and is redirected to login", async ({ page }) => {
     // Log in with a real seeded QA teacher account
     await loginAs(page, QA_TEACHER);
-    await expect(page.getByText(/dashboard/i)).toBeVisible();
+    // We are now past /app/login — verify URL is on a dashboard
+    await expect(page).toHaveURL(/\/app(?!\/login)/, { timeout: 10_000 });
 
-    // Find and click sign out
-    const logoutButton = page.getByRole("button", { name: /sign out|log out|logout/i });
-    if (await logoutButton.isVisible()) {
-      await logoutButton.click();
-      await expect(page).toHaveURL(/\/app\/login/, { timeout: 15_000 });
-    }
+    // Open the user menu (aria-label = "User menu")
+    const userMenu = page.getByRole("button", { name: /user menu/i });
+    await expect(userMenu).toBeVisible({ timeout: 10_000 });
+    await userMenu.click();
+
+    // Click the sign-out button inside the dropdown
+    const signOutBtn = page.getByRole("button", { name: /sign out/i });
+    await expect(signOutBtn).toBeVisible();
+    await signOutBtn.click();
+    await expect(page).toHaveURL(/\/app\/login/, { timeout: 15_000 });
   });
 });

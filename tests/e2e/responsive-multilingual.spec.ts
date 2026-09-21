@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { devices } from "@playwright/test";
+import { loginAs } from "./helpers";
 
 const viewports = [
   { name: "desktop", width: 1280, height: 800 },
@@ -56,30 +57,24 @@ test.describe("Responsive layout", () => {
 });
 
 test.describe("Mobile navigation", () => {
-  test("mobile hamburger menu toggles navigation", async ({ page }) => {
+  test("mobile hamburger menu toggles sidebar navigation", async ({ page }) => {
+    // Need to be on an authenticated app page to see the sidebar/hamburger
+    await loginAs(page, "qa.teacher@example.test");
     await page.setViewportSize({ width: 375, height: 812 });
-    await page.goto("/", { waitUntil: "domcontentloaded" });
+    // Navigate to a protected app page that renders the full app layout
+    await page.goto("/app/workshops", { waitUntil: "domcontentloaded" });
 
     // Find the hamburger/menu toggle button — aria-label="Open sidebar" on the app layout
-    const menuButton = page.getByRole("button", { name: /menu|hamburger|toggle|open.*(nav|sidebar)/i });
-    const isMobileMenu = await menuButton.isVisible();
-
-    if (isMobileMenu) {
-      await menuButton.click();
-      // Navigation should now be visible
-      await expect(page.getByRole("navigation")).toBeVisible();
-      // Click a nav link
-      const navLink = page.getByRole("link", { name: /services/i }).first();
-      if (await navLink.isVisible()) {
-        await navLink.click();
-        await expect(page).toHaveURL(/\/services/);
-      }
-    } else {
-      // If no hamburger menu, verify the nav is visible anyway
-      const nav = page.getByRole("navigation");
-      if (await nav.isVisible()) {
-        await expect(nav).toBeVisible();
-      }
+    const menuButton = page.getByRole("button", { name: /open sidebar/i });
+    await expect(menuButton).toBeVisible();
+    await menuButton.click();
+    // The mobile sidebar should now be visible — wait for the nav element
+    await expect(page.getByRole("navigation")).toBeVisible({ timeout: 5000 });
+    // Click a nav link
+    const navLink = page.getByRole("link", { name: /services/i }).first();
+    if (await navLink.isVisible()) {
+      await navLink.click();
+      await expect(page).toHaveURL(/\/app\//);
     }
   });
 });
