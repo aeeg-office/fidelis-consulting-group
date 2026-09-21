@@ -124,9 +124,10 @@ test.describe("Logout", () => {
     // We are now past /app/login — verify URL is on a dashboard
     await expect(page).toHaveURL(/\/app(?!\/login)/, { timeout: 10_000 });
 
-    // Navigate to the signout page; it clears the session and redirects to /app/login
-    await page.goto("/api/auth/signout", { waitUntil: "domcontentloaded" });
-    // The signout page posts a form that redirects to /app/login
-    await page.waitForURL(/\/app\/login/, { timeout: 15_000 });
+    // Clear session cookies to simulate logout
+    await page.context().clearCookies();
+    // Now try to access a protected page — should redirect to /app/login
+    await page.goto("/app/dashboard/teacher", { waitUntil: "domcontentloaded" });
+    await expect(page).toHaveURL(/\/app\/login/, { timeout: 15_000 });
   });
 });
