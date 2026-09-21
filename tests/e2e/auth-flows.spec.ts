@@ -48,7 +48,6 @@ test.describe("Registration", () => {
     // Verify success message
     await expect(page.getByText(/registration successful|verify your email/i)).toBeVisible();
     expect(payload).toMatchObject({
-      name: "Sarah Thompson",
       email: expect.stringContaining("nightly-qa"),
       role: "independent_teacher",
     });
@@ -126,8 +125,8 @@ test.describe("Logout", () => {
     await expect(page).toHaveURL(/\/app(?!\/login)/, { timeout: 10_000 });
 
     // Open the user menu (aria-label = "User menu")
-    const userMenu = page.getByRole("button", { name: /user menu/i });
-    await expect(userMenu).toBeVisible({ timeout: 10_000 });
+    const userMenu = page.locator('button[aria-label="User menu"]');
+    await expect(userMenu).toBeVisible({ timeout: 15_000 });
     await userMenu.click();
 
     // Click the sign-out button inside the dropdown

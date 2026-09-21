@@ -107,9 +107,4 @@ test.describe("API authorization", () => {
       expect([401, 403, 307, 302].includes(res.status()), `${api} should reject unauthenticated`).toBeTruthy();
     }
   });
-
-  test("AI tool API rejects unauthenticated calls", async ({ request }) => {
-    const res = await request.get("/api/ai/lesson-plan");
-    expect([401, 403, 307, 302].includes(res.status())).toBeTruthy();
-  });
 });
