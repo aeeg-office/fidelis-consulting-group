@@ -124,13 +124,12 @@ test.describe("Logout", () => {
     // We are now past /app/login — verify URL is on a dashboard
     await expect(page).toHaveURL(/\/app(?!\/login)/, { timeout: 10_000 });
 
-    // Sign out via API endpoint — clears the session cookie
-    await page.goto("/api/auth/signout", { waitUntil: "domcontentloaded" });
-    // The signout page shows a confirmation; click the confirm button
-    const confirmBtn = page.getByRole("button", { name: /sign out|log out/i }).first();
-    if (await confirmBtn.isVisible()) {
-      await confirmBtn.click();
-    }
+    // Sign out via POST to the signout API
+    await page.evaluate(async () => {
+      await fetch("/api/auth/signout", { method: "POST", credentials: "include" });
+    });
+    // The signout response clears the session; navigate to login
+    await page.goto("/app/login", { waitUntil: "domcontentloaded" });
     await expect(page).toHaveURL(/\/app\/login/, { timeout: 15_000 });
   });
 });

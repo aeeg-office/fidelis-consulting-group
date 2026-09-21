@@ -89,15 +89,20 @@ test.describe("Subscriptions and entitlements", () => {
 test.describe("Consultancy workspace", () => {
   test("HOD can access consultancy request workspace", async ({ page }) => {
     await loginAs(page, "qa.hod@example.test");
-    await page.route("**/api/hod/**", async (route) => {
+    // Mock the hod API to return data matching the HodData interface
+    await page.route("**/api/hod/department", async (route) => {
       await route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({ success: true, data: [] }),
+        body: JSON.stringify({
+          department: { id: "d1", name: "English Department", nameAr: null, subject: "English", teacherCount: 5 },
+          teachers: [],
+        }),
       });
     });
     await page.goto("/app/hod", { waitUntil: "domcontentloaded" });
-    await expect(page.getByRole("heading", { level: 1 })).toBeVisible({ timeout: 10_000 });
+    // The page renders an h1 with the department name when data loads
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(/English Department|Department Workspace/i);
     await expect(page).not.toHaveURL(/\/app\/login/);
   });
 });
